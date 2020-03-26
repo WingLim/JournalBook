@@ -18,6 +18,7 @@ class Settings extends Component {
     importing: false,
     files: [],
     trackingQuestions: [],
+    server: ''
   };
 
   async componentWillMount() {
@@ -178,6 +179,16 @@ class Settings extends Component {
     }
   };
 
+  useServer = e => {
+    console.log(e.target.value);
+    let server = e.target.value;
+    this.setState({server})
+  };
+
+  saveServer = () => {
+    localStorage.setItem('server', this.state.server);
+  };
+
   importData = async event => {
     const reader = new FileReader();
     const file = event.target.files[0];
@@ -287,6 +298,25 @@ class Settings extends Component {
 
     return (
       <div class="wrap lift-children">
+        <div>
+            <h2>Use Server</h2>
+            <p>
+            <input
+                id="use_server"
+                type="text"
+                dir="auto"
+                onChange={this.useServer}
+            />
+            </p>
+            <button
+              type="button"
+              class={`button button--space button--grey`}
+              onClick={this.saveServer}
+            >
+              Save
+            </button>
+            <hr />
+        </div>
         <div>
           <h2>Manage your data</h2>
 
