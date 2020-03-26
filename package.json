@@ -32,9 +32,8 @@
   "dependencies": {
     "eslint-config-prettier": "^3.3.0",
     "idb": "^5.0.1",
-    "preact": "^8.5.3",
-    "preact-compat": "^3.17.0",
-    "preact-router": "^2.5.7",
+    "preact": "^10.3.4",
+    "preact-router": "^3.2.1",
     "unistore": "^3.2.1",
     "uuid": "^3.3.2"
   }
