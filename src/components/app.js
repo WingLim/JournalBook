@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { Router } from 'preact-router';
-import { openDb } from 'idb';
+import { openDB } from 'idb';
 import { sendBeacon } from '../utils/beacon';
 import Header from './Header';
 
@@ -33,26 +33,28 @@ class App extends Component {
   async componentDidMount() {
     try {
       const version = 5;
-      const dbPromise = openDb('entries-store', version, udb => {
-        switch (udb.oldVersion) {
-          case 0:
-            udb.createObjectStore('questions');
-          case 1:
-            udb.createObjectStore('entries');
-          case 2:
-            udb.createObjectStore('highlights');
-          case 3:
-            udb.createObjectStore('settings', {
-              theme: localStorage.getItem('journalbook_theme') || '',
-              animation: window.matchMedia('(prefers-reduced-motion: reduce)')
-                .matches
-                ? 'off'
-                : '',
-            });
-          case 4: {
-            udb.createObjectStore('trackingQuestions');
-            udb.createObjectStore('trackingEntries');
-          }
+      const dbPromise = openDB('entries-store', version, {
+          upgrade(db, oldVersion) {
+            switch (oldVersion) {
+            case 0:
+                db.createObjectStore('questions');
+            case 1:
+                db.createObjectStore('entries');
+            case 2:
+                db.createObjectStore('highlights');
+            case 3:
+                db.createObjectStore('settings', {
+                theme: localStorage.getItem('journalbook_theme') || '',
+                animation: window.matchMedia('(prefers-reduced-motion: reduce)')
+                    .matches
+                    ? 'off'
+                    : '',
+                });
+            case 4: {
+                db.createObjectStore('trackingQuestions');
+                db.createObjectStore('trackingEntries');
+            }
+            }
         }
       });
 
@@ -75,6 +77,7 @@ class App extends Component {
         }
       }
     } catch (e) {
+        console.log(e)
       this.setState({ dbError: true });
     }
   }

@@ -1,15 +1,15 @@
-import { openDb } from 'idb';
+import { openDB } from 'idb';
 
 export class DB {
   db;
 
   constructor(dbPromise) {
-    this.db = dbPromise || openDb('entries-store');
+    this.db = dbPromise || openDB('entries-store');
   }
 
-  get(table, key) {
-    return this.db.then(db =>
-      db
+  async get(table, key) {
+    return this.db.then(async db =>
+      await db
         .transaction(table)
         .objectStore(table)
         .get(key)
@@ -17,42 +17,43 @@ export class DB {
   }
 
   set(table, key, val) {
-    return this.db.then(db => {
+    return this.db.then(async db => {
       const tx = db.transaction(table, 'readwrite');
-      tx.objectStore(table).put(val, key);
-      return tx.complete;
+      await tx.objectStore(table).put(val, key);
+      return tx.done;
     });
   }
 
   delete(table, key) {
-    return this.db.then(db => {
+    return this.db.then(async db => {
       const tx = db.transaction(table, 'readwrite');
-      tx.objectStore(table).delete(key);
-      return tx.complete;
+      await tx.objectStore(table).delete(key);
+      return tx.done;
     });
   }
 
   clear(table) {
-    return this.db.then(db => {
+    return this.db.then(async db => {
       const tx = db.transaction(table, 'readwrite');
-      tx.objectStore(table).clear();
-      return tx.complete;
+      await tx.objectStore(table).clear();
+      return tx.done;
     });
   }
 
   keys(table) {
-    return this.db.then(db => {
+    return this.db.then(async db => {
       const tx = db.transaction(table);
       const keys = [];
       const store = tx.objectStore(table);
+      let cursor = await store.openCursor();
 
-      (store.iterateKeyCursor || store.iterateCursor).call(store, cursor => {
+      while(cursor) {
         if (!cursor) return;
         keys.push(cursor.key);
-        cursor.continue();
-      });
+        cursor = await cursor.continue();
+      }
 
-      return tx.complete.then(() => {
+      return tx.done.then(() => {
         keys.reverse();
         return keys;
       });
@@ -60,8 +61,8 @@ export class DB {
   }
 
   getAll(table) {
-    return this.db.then(db =>
-      db
+    return this.db.then(async db =>
+      await db
         .transaction(table)
         .objectStore(table)
         .getAll()
