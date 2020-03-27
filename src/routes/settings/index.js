@@ -182,13 +182,11 @@ class Settings extends Component {
   };
 
   useServer = e => {
-    console.log(e.target.value);
     let server = e.target.value;
     this.setState({server})
   };
 
   useServerPwd = e => {
-      console.log(e.target.value);
       let pwd = e.target.value;
       this.setState({pwd})
   }
