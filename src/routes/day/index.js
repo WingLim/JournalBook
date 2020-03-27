@@ -320,7 +320,7 @@ class Day extends Component {
                 id={slug}
                 label={text}
                 value={answer}
-                onInput={v => this.updateAnswer(slug, v)}
+                onChange={v => this.updateAnswer(slug, v)}
               />
             ))
           : null}
@@ -467,7 +467,7 @@ class Day extends Component {
                   question.notes === true ? 'Additional notes' : question.notes
                 }
                 value={question.answer ? question.answer.notes || '' : ''}
-                onInput={v => this.updateTrackingNotes(question.id, v)}
+                onChange={v => this.updateTrackingNotes(question.id, v)}
               />
             )}
           </div>
