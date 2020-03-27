@@ -18,7 +18,8 @@ class Settings extends Component {
     importing: false,
     files: [],
     trackingQuestions: [],
-    server: ''
+    server: '',
+    pwd: ''
   };
 
   async componentWillMount() {
@@ -29,8 +30,9 @@ class Settings extends Component {
     questions.sort((a, b) => a.createdAt - b.createdAt);
 
     const trackingQuestions = await getTrackingQuestions(this.props.db);
-
-    this.setState({ questions, trackingQuestions });
+    let server = localStorage.getItem('server')
+    let pwd = localStorage.getItem('server_pwd')
+    this.setState({ questions, trackingQuestions, server, pwd });
   }
 
   updateSetting = key => {
@@ -185,8 +187,15 @@ class Settings extends Component {
     this.setState({server})
   };
 
+  useServerPwd = e => {
+      console.log(e.target.value);
+      let pwd = e.target.value;
+      this.setState({pwd})
+  }
+
   saveServer = () => {
     localStorage.setItem('server', this.state.server);
+    localStorage.setItem('server_pwd', this.state.pwd)
   };
 
   importData = async event => {
@@ -302,10 +311,20 @@ class Settings extends Component {
             <h2>Use Server</h2>
             <p>
             <input
-                id="use_server"
+                id="server"
                 type="text"
                 dir="auto"
+                value={this.state.server}
                 onChange={this.useServer}
+                placeholder="Server URL"
+            />
+            <input
+                id="server_pwd"
+                type="text"
+                dir="auto"
+                value={this.state.pwd}
+                onChange={this.useServerPwd}
+                placeholder="Token for Server"
             />
             </p>
             <button
