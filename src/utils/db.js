@@ -20,12 +20,8 @@ export class DB {
                     .get(key)
             );
         } else {
-            return await axios.get('http://127.0.0.1:5000/journal', {
-                params: {
-                    table: table,
-                    key: key
-                }
-            }).then(function (res) {
+            return await axios.get(this.server+'/'+table+'/'+key)
+            .then(function (res) {
                 return res.data
             })
         }
@@ -40,28 +36,34 @@ export class DB {
             });
         } else {
             val = JSON.stringify(val);
-            return await axios.post('http://127.0.0.1:5000/journal', {
-                table: table,
-                key: key,
+            return await axios.post(this.server+'/'+table+'/'+key, {
                 val: val
             })
         }
     }
 
-    delete(table, key) {
-        return this.db.then(async db => {
-            const tx = db.transaction(table, 'readwrite');
-            await tx.objectStore(table).delete(key);
-            return tx.done;
-        });
+    async delete(table, key) {
+        if (this.server == null || this.server == "") {
+            return this.db.then(async db => {
+                const tx = db.transaction(table, 'readwrite');
+                await tx.objectStore(table).delete(key);
+                return tx.done;
+            });
+        } else {
+            return await axios.delete(this.server+'/'+table+'/'+key)
+        }
     }
 
-    clear(table) {
-        return this.db.then(async db => {
-            const tx = db.transaction(table, 'readwrite');
-            await tx.objectStore(table).clear();
-            return tx.done;
-        });
+    async clear(table) {
+        if (this.server == null || this.server == "") {
+            return this.db.then(async db => {
+                const tx = db.transaction(table, 'readwrite');
+                await tx.objectStore(table).clear();
+                return tx.done;
+            });
+        } else {
+            return await axios.delete(this.server+'/'+table)
+        }
     }
 
     async keys(table) {
@@ -80,32 +82,32 @@ export class DB {
 
                 return tx.done.then(() => {
                     keys.reverse();
-                    console.log(keys);
                     return keys;
                 });
             });
         } else {
-
-            return await axios.get('http://127.0.0.1:5000/journal', {
-                params: {
-                    table: table,
-                    type: 'keys',
-                    pwd: this.pwd
-                }
-            }).then(function (res) {
-                return res.data
-            })
+            return await axios.get(this.server+'/keys/'+table)
+                .then(function (res) {
+                    return res.data
+                })
         }
 
     }
 
-    getAll(table) {
-        return this.db.then(async db =>
-            await db
-                .transaction(table)
-                .objectStore(table)
-                .getAll()
-        );
+    async getAll(table) {
+        if (this.server == null || this.server == "") {
+            return this.db.then(async db =>
+                await db
+                    .transaction(table)
+                    .objectStore(table)
+                    .getAll()
+            );
+        } else {
+            return await axios.get(this.server+'/'+table)
+                .then(function(res) {
+                    return res.data
+                })
+        }
     }
 
     async getObject(table) {
