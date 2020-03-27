@@ -258,6 +258,15 @@ textarea {
   background: transparent;
 }
 
+#server, #server_pwd {
+    width: 48%;
+    display: inline;
+}
+
+#server_pwd {
+    margin-left: 4%;
+}
+
 select {
   background: rgba(150, 150, 150, 0.1);
   padding: 1em;
