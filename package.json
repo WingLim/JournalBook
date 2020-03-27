@@ -30,6 +30,7 @@
     "prettier": "2.0.2"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "eslint-config-prettier": "^6.10.1",
     "idb": "^5.0.1",
     "preact": "^10.3.4",
