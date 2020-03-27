@@ -2,6 +2,10 @@
 
 Built with [Preact](http://preactjs.com) and [IDB](https://npmjs.com/package/idb) with right to left support.
 
+## Use Server fo sync
+
+if you want to use serverside to sync your journal, you can run [JournalBookServer](https://github.com/WingLim/JournalBookServer) in your server, and set in JournalBook's settings page
+
 ## Before running for the first time
 
 Make sure you have a `.env` file locally with the contents copied from `.env.sample`
